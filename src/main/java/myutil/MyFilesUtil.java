@@ -20,7 +20,7 @@ public class MyFilesUtil {
     public static Set<Path> getPathsByFolderName(String path) throws IOException {
         Path pathAbsolute = Paths.get(path);
         Set<Path> tmp = Files.walk(Paths.get(path)).filter(Files::isRegularFile).map(pathAbsolute::relativize).collect(Collectors.toSet());
-        tmp.remove(Paths.get(Main.LOG_FILE));
+        tmp.remove(Paths.get(Main.CHANGES_LOG_FILE_NAME));
         return tmp;
     }
 

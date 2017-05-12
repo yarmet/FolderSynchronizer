@@ -2,6 +2,7 @@ package myutil;
 
 import folder.MyFolder;
 import main.Main;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,12 +16,14 @@ import java.util.stream.Collectors;
  */
 public class LogUtil {
 
+
+
     public static List<String> loadLogFile(String path) throws IOException {
-        return Files.lines(Paths.get(path, Main.LOG_FILE)).collect(Collectors.toList());
+        return Files.lines(Paths.get(path, Main.CHANGES_LOG_FILE_NAME)).collect(Collectors.toList());
     }
 
     public static void saveToLogFile(MyFolder folder) throws IOException {
-        try (FileOutputStream fo = new FileOutputStream(String.valueOf(Paths.get(folder.getName(), Main.LOG_FILE))); PrintWriter pw = new PrintWriter(fo)) {
+        try (FileOutputStream fo = new FileOutputStream(String.valueOf(Paths.get(folder.getName(), Main.CHANGES_LOG_FILE_NAME))); PrintWriter pw = new PrintWriter(fo)) {
             for (Path elem : folder.getNestedFiles())
                 pw.println(elem);
         }

@@ -1,37 +1,42 @@
 package main;
 
 import folder.MyFolder;
+import lombok.extern.log4j.Log4j;
 import myutil.LogUtil;
 import myutil.MyFilesUtil;
 
+import javax.swing.*;
 import java.io.*;
 
-
+@Log4j
 public class Main {
 
-    public static String LOG_FILE = "Folder-Synchronizer";
+    public static String CHANGES_LOG_FILE_NAME = "Folder-Synchronizer";
 
-    private String FIRST_PATH = "folder1";
-    private String SECOND_PATH = "folder2";
+    public void start(String selectedFolder1, String selectedFolder2, JLabel status) {
+        try {
+            status.setText("сканируем папки");
+            MyFolder folder1 = MyFolder.scan(selectedFolder1);
+            MyFolder folder2 = MyFolder.scan(selectedFolder2);
 
-    private void start() throws IOException {
+            status.setText("синхронизируем удаленные файлы");
+            MyFilesUtil.delete(folder1, folder2);
+            MyFilesUtil.delete(folder2, folder1);
 
-        MyFolder folder1 = MyFolder.scan(FIRST_PATH);
-        MyFolder folder2 = MyFolder.scan(SECOND_PATH);
+            status.setText("синхронизируем новые/обновленные файлы");
+            MyFilesUtil.copyOrCreateNewFiles(folder1, folder2);
+            MyFilesUtil.copyOrCreateNewFiles(folder2, folder1);
 
-        MyFilesUtil.delete(folder1, folder2);
-        MyFilesUtil.delete(folder2, folder1);
+            status.setText("записываем изменения");
+            LogUtil.saveToLogFile(folder1);
+            LogUtil.saveToLogFile(folder2);
 
-        MyFilesUtil.copyOrCreateNewFiles(folder1, folder2);
-        MyFilesUtil.copyOrCreateNewFiles(folder2, folder1);
-
-        LogUtil.saveToLogFile(folder1);
-        LogUtil.saveToLogFile(folder2);
-
+            status.setText("завершено");
+        } catch (IOException e) {
+            status.setText("ошибка, смотри лог файл");
+            log.error(e);
+        }
     }
 
-    public static void main(String[] args) throws IOException {
-        new Main().start();
-    }
 
 }
