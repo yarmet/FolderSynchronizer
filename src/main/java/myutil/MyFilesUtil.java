@@ -1,6 +1,7 @@
 package myutil;
 
 import folder.MyFolder;
+import main.Main;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +19,9 @@ public class MyFilesUtil {
 
     public static Set<Path> getPathsByFolderName(String path) throws IOException {
         Path pathAbsolute = Paths.get(path);
-        return Files.walk(Paths.get(path)).filter(Files::isRegularFile).map(pathAbsolute::relativize).collect(Collectors.toSet());
+        Set<Path> tmp = Files.walk(Paths.get(path)).filter(Files::isRegularFile).map(pathAbsolute::relativize).collect(Collectors.toSet());
+        tmp.remove(Paths.get(Main.LOG_FILE));
+        return tmp;
     }
 
 
@@ -29,25 +32,36 @@ public class MyFilesUtil {
 
 
     public static void copyOrCreateNewFiles(MyFolder sourceFolder, MyFolder destFolder) throws IOException {
-
         for (Path path : sourceFolder.getNestedFiles()) {
-
             Path sourceFolderFullPath = Paths.get(sourceFolder.getName(), path.toString());
             Path destFolderFullPath = Paths.get(destFolder.getName(), path.toString());
 
             if (!destFolder.getNestedFiles().contains(path)) {  // if destination file not found.
                 createParentDirectoriesIfNeed(destFolderFullPath);
                 Files.copy(sourceFolderFullPath, destFolderFullPath);
+                destFolder.getNestedFiles().add(path);
             } else {
                 FileTime sourceFileModifiedTime = Files.getLastModifiedTime(sourceFolderFullPath);
                 FileTime newFileModifiedTime = Files.getLastModifiedTime(destFolderFullPath);
 
                 if (sourceFileModifiedTime.compareTo(newFileModifiedTime) > 0) {  // if destination file older than source file.
                     Files.copy(sourceFolderFullPath, destFolderFullPath, StandardCopyOption.REPLACE_EXISTING);
+                    destFolder.getNestedFiles().add(path);
                 }
             }
-
         }
     }
+
+
+    public static void delete(MyFolder folder1, MyFolder folder2) throws IOException {
+        for (String prev : folder1.getLogs()) {
+            Path tmpPath = Paths.get(prev);
+            if (!folder1.getNestedFiles().contains(tmpPath)) {
+                Files.deleteIfExists(Paths.get(folder2.getName(), prev));
+                folder2.getNestedFiles().remove(tmpPath);
+            }
+        }
+    }
+
 
 }
