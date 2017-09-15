@@ -50,7 +50,7 @@ public class MainForm {
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         JFrame mainForm = new JFrame();
         mainForm.setContentPane(new MainForm().panel1);
         mainForm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
