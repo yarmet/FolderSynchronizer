@@ -19,13 +19,20 @@ import java.util.stream.Collectors;
 public class LogUtil {
 
 
+    /**
+     * загружаем строки из лог файла (хранящего состояние папки после прошлого сканирования)
+     */
     public static List<String> loadLogFile(String path) throws IOException {
         return Files.lines(Paths.get(path, Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8")).collect(Collectors.toList());
     }
 
+
+    /**
+     * записываем текущее состояние папки в лог файл
+     */
     public static void saveToLogFile(MyFolder folder) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(folder.getName(), Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            for (Path s : folder.getNestedFiles()) {
+            for (Path s : folder.getFolderState()) {
                 writer.append(s.toString()).write('\n');
             }
         }

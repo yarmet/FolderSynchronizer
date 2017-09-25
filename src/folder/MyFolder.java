@@ -20,9 +20,14 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MyFolder {
 
+    //название папки
     private String name;
-    private Set<Path> nestedFiles;
-    private List<String> logs;
+
+    // список вложенных файлов
+    private Set<Path> folderState;
+
+    //список вложенных файлов при прошлом сканировании
+    private List<String> previousFolderState;
 
     public static MyFolder scan(String folderName) throws IOException {
         Set<Path> paths = MyFilesUtil.getPathsByFolderName(folderName);

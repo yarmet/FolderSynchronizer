@@ -25,40 +25,49 @@ public class MyFilesUtil {
     }
 
 
-    private static void createParentDirectoriesIfNeed(Path path) throws IOException {
+    private static void createParentDirectoryIfNeed(Path path) throws IOException {
         Path tmp = path.getParent();
         if (tmp != null) Files.createDirectories(tmp);
     }
 
 
+    /**
+     * получаем список файлов папки 1
+     * если вторая папка не содержит такой файл, то вставляем его туда
+     * если вторая папка уже имеет такой файл, но дата его модификации более старая чем у файла из первого файла, то тоже обновляем его.
+     */
     public static void copyOrCreateNewFiles(MyFolder sourceFolder, MyFolder destFolder) throws IOException {
-        for (Path path : sourceFolder.getNestedFiles()) {
+        for (Path path : sourceFolder.getFolderState()) {
             Path sourceFolderFullPath = Paths.get(sourceFolder.getName(), path.toString());
             Path destFolderFullPath = Paths.get(destFolder.getName(), path.toString());
 
-            if (!destFolder.getNestedFiles().contains(path)) {  // if destination file not found.
-                createParentDirectoriesIfNeed(destFolderFullPath);
+            if (!destFolder.getFolderState().contains(path)) {  // if destination file not found.
+                createParentDirectoryIfNeed(destFolderFullPath);
                 Files.copy(sourceFolderFullPath, destFolderFullPath);
-                destFolder.getNestedFiles().add(path);
+                destFolder.getFolderState().add(path);
             } else {
                 FileTime sourceFileModifiedTime = Files.getLastModifiedTime(sourceFolderFullPath);
                 FileTime newFileModifiedTime = Files.getLastModifiedTime(destFolderFullPath);
 
                 if (sourceFileModifiedTime.compareTo(newFileModifiedTime) > 0) {  // if destination file older than source file.
                     Files.copy(sourceFolderFullPath, destFolderFullPath, StandardCopyOption.REPLACE_EXISTING);
-                    destFolder.getNestedFiles().add(path);
+                    destFolder.getFolderState().add(path);
                 }
             }
         }
     }
 
-
+    /**
+     * смотрим старое состояние папки 1 (лог файл в котором список файлов которые имелись при прошлом сканировании).
+     * если в старом состоянии (лог файле) есть что-то, чего нет в текущем состоянии, значит это было удалено из папки 1
+     * значит удаляем это из папки 2
+     */
     public static void delete(MyFolder folder1, MyFolder folder2) throws IOException {
-        for (String prev : folder1.getLogs()) {
-            Path tmpPath = Paths.get(prev);
-            if (!folder1.getNestedFiles().contains(tmpPath)) {
-                Files.deleteIfExists(Paths.get(folder2.getName(), prev));
-                folder2.getNestedFiles().remove(tmpPath);
+        for (String prevFolderState : folder1.getPreviousFolderState()) {
+            Path oldPaths = Paths.get(prevFolderState);
+            if (!folder1.getFolderState().contains(oldPaths)) {
+                Files.deleteIfExists(Paths.get(folder2.getName(), prevFolderState));
+                folder2.getFolderState().remove(oldPaths);
             }
         }
     }
