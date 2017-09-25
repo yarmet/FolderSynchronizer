@@ -1,29 +1,28 @@
 package gui;
 
-import main.Main;
-import properties.PropertiManager;
+import processor.Processor;
+import properties.PropertiesManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by ruslan on 12.05.2017.
  */
 public class MainForm {
 
-    private Main main = new Main();
-    private PropertiManager propertiManager = new PropertiManager();
+    private Processor processor = new Processor();
+    private PropertiesManager propertiesManager = new PropertiesManager();
 
     private JPanel panel1;
-    private JTextField textField2;
-    private JTextField textField1;
+    private JTextField folder2Field;
+    private JTextField folder1Field;
     private JButton button1;
     private JButton button2;
     private JButton button3;
-    private JLabel status;
+    private JLabel statusLabel;
 
 
     public MainForm() {
@@ -32,19 +31,19 @@ public class MainForm {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        propertiManager.load();
+        propertiesManager.load();
 
-        button1.addActionListener(e -> openFileDialog(fileChooser, PropertiManager.FOLDER1, textField1));
-        button2.addActionListener(e -> openFileDialog(fileChooser, PropertiManager.FOLDER2, textField2));
+        button1.addActionListener(e -> openFileDialog(fileChooser, PropertiesManager.FOLDER1, folder1Field));
+        button2.addActionListener(e -> openFileDialog(fileChooser, PropertiesManager.FOLDER2, folder2Field));
 
         button3.addActionListener(e -> {
-            if(textField1.getText().equals("")  || textField2.getText().equals("")) {
-                status.setText("пути к папкам не должны быть пустыми");
+            if(folder1Field.getText().equals("")  || folder2Field.getText().equals("")) {
+                statusLabel.setText("пути к папкам не должны быть пустыми");
                 return;
             }
 
-            new Thread(() -> main.start(textField1.getText(), textField2.getText(), status)).start();
-            propertiManager.save();
+            new Thread(() -> processor.start(folder1Field.getText(), folder2Field.getText(), statusLabel)).start();
+            propertiesManager.save();
         });
 
     }
@@ -62,14 +61,14 @@ public class MainForm {
     }
 
 
-    private void openFileDialog(JFileChooser fileChooser, String folder, JTextField textField) {
-        String fold = propertiManager.getFolderPath(folder);
+    private void openFileDialog(JFileChooser fileChooser, String folderName, JTextField statusField) {
+        String fold = propertiesManager.getFolderPath(folderName);
         fileChooser.setCurrentDirectory(new File(fold));
         int result = fileChooser.showOpenDialog(panel1);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            textField.setText(selectedFile.getAbsolutePath());
-            propertiManager.changeFolder(folder, selectedFile.getAbsolutePath());
+            statusField.setText(selectedFile.getAbsolutePath());
+            propertiesManager.changeFolder(folderName, selectedFile.getAbsolutePath());
         }
     }
 

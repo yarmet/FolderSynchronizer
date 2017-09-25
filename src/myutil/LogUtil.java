@@ -1,7 +1,7 @@
 package myutil;
 
 import folder.MyFolder;
-import main.Main;
+import processor.Processor;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -20,11 +20,11 @@ public class LogUtil {
 
 
     public static List<String> loadLogFile(String path) throws IOException {
-        return Files.lines(Paths.get(path, Main.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8")).collect(Collectors.toList());
+        return Files.lines(Paths.get(path, Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8")).collect(Collectors.toList());
     }
 
     public static void saveToLogFile(MyFolder folder) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(folder.getName(), Main.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(folder.getName(), Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Path s : folder.getNestedFiles()) {
                 writer.append(s.toString()).write('\n');
             }
