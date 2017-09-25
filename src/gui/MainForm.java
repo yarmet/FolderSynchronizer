@@ -57,6 +57,7 @@ public class MainForm {
         mainForm.setResizable(false);
         mainForm.setPreferredSize(new Dimension(600, 200));
         mainForm.pack();
+        mainForm.setLocationRelativeTo(null);
         mainForm.setVisible(true);
     }
 

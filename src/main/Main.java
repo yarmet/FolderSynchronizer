@@ -6,7 +6,7 @@ import myutil.LogUtil;
 import myutil.MyFilesUtil;
 
 import javax.swing.*;
-import java.io.*;
+
 
 @Log4j
 public class Main {
@@ -32,7 +32,7 @@ public class Main {
             LogUtil.saveToLogFile(folder2);
 
             status.setText("завершено");
-        } catch (IOException e) {
+        } catch (Exception e) {
             status.setText("ошибка, смотри лог файл");
             log.error(e);
         }
