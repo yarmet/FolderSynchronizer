@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import myutil.LogUtil;
-import myutil.MyFilesUtil;
+import myutil.FolderUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MyFolder {
+public class Folder {
 
     //название папки
     private String name;
@@ -29,8 +29,8 @@ public class MyFolder {
     //список вложенных файлов при прошлом сканировании
     private List<String> previousFolderState;
 
-    public static MyFolder scan(String folderName) throws IOException {
-        Set<Path> paths = MyFilesUtil.getPathsByFolderName(folderName);
+    public static Folder scan(String folderName) throws IOException {
+        Set<Path> paths = FolderUtil.getPathsByFolderName(folderName);
         List<String> logs;
         try {
             logs = LogUtil.loadLogFile(folderName);
@@ -38,6 +38,6 @@ public class MyFolder {
             logs = new ArrayList<>();
             for (Path p : paths) logs.add(p.toString());
         }
-        return new MyFolder(folderName, paths, logs);
+        return new Folder(folderName, paths, logs);
     }
 }

@@ -1,7 +1,7 @@
 package gui;
 
 import processor.Processor;
-import properties.PropertiesManager;
+import properties.RecentOpenFolderManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,7 +14,7 @@ import java.io.File;
 public class MainForm {
 
     private Processor processor = new Processor();
-    private PropertiesManager propertiesManager = new PropertiesManager();
+    private RecentOpenFolderManager propertiesManager = new RecentOpenFolderManager();
 
     private JPanel panel1;
     private JTextField folder2Field;
@@ -33,10 +33,11 @@ public class MainForm {
 
         propertiesManager.load();
 
-        button1.addActionListener(e -> openFileDialog(fileChooser, PropertiesManager.FOLDER1, folder1Field));
-        button2.addActionListener(e -> openFileDialog(fileChooser, PropertiesManager.FOLDER2, folder2Field));
+        button1.addActionListener(e -> openFileDialog(fileChooser, RecentOpenFolderManager.FOLDER1, folder1Field));
+        button2.addActionListener(e -> openFileDialog(fileChooser, RecentOpenFolderManager.FOLDER2, folder2Field));
 
         button3.addActionListener(e -> {
+
             if(folder1Field.getText().equals("")  || folder2Field.getText().equals("")) {
                 statusLabel.setText("пути к папкам не должны быть пустыми");
                 return;
@@ -44,6 +45,7 @@ public class MainForm {
 
             new Thread(() -> processor.start(folder1Field.getText(), folder2Field.getText(), statusLabel)).start();
             propertiesManager.save();
+
         });
 
     }

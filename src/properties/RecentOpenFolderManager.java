@@ -10,7 +10,7 @@ import java.util.Properties;
  * Created by ruslan on 12.05.2017.
  */
 @Log4j
-public class PropertiesManager {
+public class RecentOpenFolderManager {
 
     public static final String FOLDER1 = "folder1";
     public static final String FOLDER2 = "folder2";

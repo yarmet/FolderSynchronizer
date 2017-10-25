@@ -1,6 +1,6 @@
 package myutil;
 
-import folder.MyFolder;
+import folder.Folder;
 import processor.Processor;
 
 import java.io.*;
@@ -30,7 +30,7 @@ public class LogUtil {
     /**
      * записываем текущее состояние папки в лог файл
      */
-    public static void saveToLogFile(MyFolder folder) throws IOException {
+    public static void saveToLogFile(Folder folder) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(folder.getName(), Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             for (Path s : folder.getFolderState()) {
                 writer.append(s.toString()).write('\n');

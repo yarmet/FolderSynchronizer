@@ -1,6 +1,6 @@
 package myutil;
 
-import folder.MyFolder;
+import folder.Folder;
 import processor.Processor;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by ruslan on 09.05.2017.
  */
-public class MyFilesUtil {
+public class FolderUtil {
 
     public static Set<Path> getPathsByFolderName(String path) throws IOException {
         Path pathAbsolute = Paths.get(path);
@@ -36,7 +36,7 @@ public class MyFilesUtil {
      * если вторая папка не содержит такой файл, то вставляем его туда
      * если вторая папка уже имеет такой файл, но дата его модификации более старая чем у файла из первого файла, то тоже обновляем его.
      */
-    public static void copyOrCreateNewFiles(MyFolder sourceFolder, MyFolder destFolder) throws IOException {
+    public static void copyOrCreateNewFiles(Folder sourceFolder, Folder destFolder) throws IOException {
         for (Path path : sourceFolder.getFolderState()) {
             Path sourceFolderFullPath = Paths.get(sourceFolder.getName(), path.toString());
             Path destFolderFullPath = Paths.get(destFolder.getName(), path.toString());
@@ -62,7 +62,7 @@ public class MyFilesUtil {
      * если в старом состоянии (лог файле) есть что-то, чего нет в текущем состоянии, значит это было удалено из папки 1
      * значит удаляем это из папки 2
      */
-    public static void delete(MyFolder folder1, MyFolder folder2) throws IOException {
+    public static void delete(Folder folder1, Folder folder2) throws IOException {
         for (String prevFolderState : folder1.getPreviousFolderState()) {
             Path oldPaths = Paths.get(prevFolderState);
             if (!folder1.getFolderState().contains(oldPaths)) {
