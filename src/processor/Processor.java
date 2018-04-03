@@ -12,7 +12,7 @@ public class Processor {
 
     public static String CHANGES_LOG_FILE_NAME = "Folder-Synchronizer";
 
-    public void start(String selectedFolder1, String selectedFolder2, JLabel statusLabel) {
+    public void start(String selectedFolder1, String selectedFolder2, JLabel statusLabel, Runnable r) {
         try {
             statusLabel.setText("сканируем папки");
             Folder folder1 = Folder.scan(selectedFolder1);
@@ -31,6 +31,7 @@ public class Processor {
             LogUtil.saveToLogFile(folder2);
 
             statusLabel.setText("завершено");
+            r.run();
         } catch (Exception e) {
             statusLabel.setText("ошибка, смотри лог файл");
             log.error(e);

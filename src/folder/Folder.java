@@ -27,17 +27,16 @@ public class Folder {
     private Set<Path> folderState;
 
     //список вложенных файлов при прошлом сканировании
-    private List<String> previousFolderState;
+    private List<Path> previousFolderState;
 
     public static Folder scan(String folderName) throws IOException {
-        Set<Path> paths = FolderUtil.getPathsByFolderName(folderName);
-        List<String> logs;
+        Set<Path> actualPathState = FolderUtil.getPathsByFolderName(folderName);
+        List<Path> previousFolderState;
         try {
-            logs = LogUtil.loadLogFile(folderName);
+            previousFolderState = LogUtil.loadLogFile(folderName);
         } catch (IOException e) {
-            logs = new ArrayList<>();
-            for (Path p : paths) logs.add(p.toString());
+            previousFolderState = new ArrayList<>(actualPathState);
         }
-        return new Folder(folderName, paths, logs);
+        return new Folder(folderName, actualPathState, previousFolderState);
     }
 }

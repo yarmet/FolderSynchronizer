@@ -22,8 +22,8 @@ public class LogUtil {
     /**
      * загружаем строки из лог файла (хранящего состояние папки после прошлого сканирования)
      */
-    public static List<String> loadLogFile(String path) throws IOException {
-        return Files.lines(Paths.get(path, Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8")).collect(Collectors.toList());
+    public static List<Path> loadLogFile(String path) throws IOException {
+        return Files.lines(Paths.get(path, Processor.CHANGES_LOG_FILE_NAME), Charset.forName("UTF-8")).map(Paths::get).collect(Collectors.toList());
     }
 
 

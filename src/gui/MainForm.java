@@ -43,7 +43,15 @@ public class MainForm {
                 return;
             }
 
-            new Thread(() -> processor.start(folder1Field.getText(), folder2Field.getText(), statusLabel)).start();
+            button1.setEnabled(false);
+            button2.setEnabled(false);
+            button3.setEnabled(false);
+
+            new Thread(() -> processor.start(folder1Field.getText(), folder2Field.getText(), statusLabel, () -> {
+                button1.setEnabled(true);
+                button2.setEnabled(true);
+                button3.setEnabled(true);
+            })).start();
             propertiesManager.save();
 
         });

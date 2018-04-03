@@ -63,11 +63,10 @@ public class FolderUtil {
      * значит удаляем это из папки 2
      */
     public static void delete(Folder folder1, Folder folder2) throws IOException {
-        for (String prevFolderState : folder1.getPreviousFolderState()) {
-            Path oldPaths = Paths.get(prevFolderState);
-            if (!folder1.getFolderState().contains(oldPaths)) {
-                Files.deleteIfExists(Paths.get(folder2.getName(), prevFolderState));
-                folder2.getFolderState().remove(oldPaths);
+        for (Path oldPath : folder1.getPreviousFolderState()) {
+            if (!folder1.getFolderState().contains(oldPath)) {
+                Files.deleteIfExists(Paths.get(folder2.getName(), oldPath.toString()));
+                folder2.getFolderState().remove(oldPath);
             }
         }
     }
