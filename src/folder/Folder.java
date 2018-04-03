@@ -30,13 +30,13 @@ public class Folder {
     private List<Path> previousFolderState;
 
     public static Folder scan(String folderName) throws IOException {
-        Set<Path> actualPathState = FolderUtil.getPathsByFolderName(folderName);
+        Set<Path> actualFolderState = FolderUtil.getPathsByFolderName(folderName);
         List<Path> previousFolderState;
         try {
-            previousFolderState = LogUtil.loadLogFile(folderName);
+            previousFolderState = LogUtil.loadFolderPreviousState(folderName);
         } catch (IOException e) {
-            previousFolderState = new ArrayList<>(actualPathState);
+            previousFolderState = new ArrayList<>(actualFolderState);
         }
-        return new Folder(folderName, actualPathState, previousFolderState);
+        return new Folder(folderName, actualFolderState, previousFolderState);
     }
 }

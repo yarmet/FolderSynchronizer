@@ -27,8 +27,8 @@ public class Processor {
             FolderUtil.copyOrCreateNewFiles(folder2, folder1);
 
             statusLabel.setText("записываем изменения");
-            LogUtil.saveToLogFile(folder1);
-            LogUtil.saveToLogFile(folder2);
+            LogUtil.saveFolderStateToLogFile(folder1);
+            LogUtil.saveFolderStateToLogFile(folder2);
 
             statusLabel.setText("завершено");
             r.run();
