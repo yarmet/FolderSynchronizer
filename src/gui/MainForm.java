@@ -43,6 +43,11 @@ public class MainForm {
                 return;
             }
 
+            if(folder1Field.getText().equals(folder2Field.getText())) {
+                statusLabel.setText("нельзя синхронизировать папку саму с собой");
+                return;
+            }
+
             button1.setEnabled(false);
             button2.setEnabled(false);
             button3.setEnabled(false);
