@@ -4,13 +4,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import myutil.LogUtil;
-import myutil.FolderUtil;
-
+import processor.Processor;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by ruslan on 09.05.2017.
@@ -20,23 +20,48 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Folder {
 
-    //название папки
     private String name;
-
-    // список вложенных файлов
     private Set<Path> folderState;
-
-    //список вложенных файлов при прошлом сканировании
-    private List<Path> previousFolderState;
+    private Set<Path> deletedFiles;
+    private Set<Path> newFiles;
 
     public static Folder scan(String folderName) throws IOException {
-        Set<Path> actualFolderState = FolderUtil.getPathsByFolderName(folderName);
-        List<Path> previousFolderState;
+        Set<Path> actualFolderState = getPathsByFolderName(folderName);
+
+        Set<Path> deletedFiles;
+        Set<Path> newFiles;
+
         try {
-            previousFolderState = LogUtil.loadFolderPreviousState(folderName);
+            List<Path> previousFolderState = LogUtil.loadFolderPreviousState(folderName);
+            deletedFiles = getDeletedFiles(actualFolderState, previousFolderState);
+            newFiles = getNewFiles(actualFolderState, previousFolderState);
         } catch (IOException e) {
-            previousFolderState = new ArrayList<>(actualFolderState);
+            deletedFiles = Collections.emptySet();
+            newFiles = actualFolderState;
         }
-        return new Folder(folderName, actualFolderState, previousFolderState);
+
+        return new Folder(folderName, actualFolderState, deletedFiles, newFiles);
     }
+
+
+    private static Set<Path> getNewFiles(Set<Path> actualState, List<Path> previousState) {
+        Set<Path> tmp = new HashSet<>(actualState);
+        tmp.removeAll(previousState);
+        return tmp;
+    }
+
+    private static Set<Path> getDeletedFiles(Set<Path> actualState, List<Path> previousState) {
+        Set<Path> tmp = new HashSet<>(previousState);
+        tmp.removeAll(actualState);
+        return tmp;
+    }
+
+
+    private static Set<Path> getPathsByFolderName(String path) throws IOException {
+        Path pathAbsolute = Paths.get(path);
+        Set<Path> tmp = Files.walk(Paths.get(path)).filter(Files::isRegularFile).map(pathAbsolute::relativize).collect(Collectors.toSet());
+        tmp.remove(Paths.get(Processor.CHANGES_LOG_FILE_NAME));
+        return tmp;
+    }
+
 }
