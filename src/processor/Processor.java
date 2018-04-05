@@ -4,6 +4,7 @@ import folder.Folder;
 import lombok.extern.log4j.Log4j;
 import myutil.LogUtil;
 import myutil.FolderUtil;
+
 import javax.swing.*;
 
 
@@ -18,19 +19,29 @@ public class Processor {
             Folder folder1 = Folder.scan(selectedFolder1);
             Folder folder2 = Folder.scan(selectedFolder2);
 
-            statusLabel.setText("синхронизируем удаленные файлы");
-            FolderUtil.delete(folder1, folder2);
-            FolderUtil.delete(folder2, folder1);
+            boolean hasChanges = false;
 
-            statusLabel.setText("синхронизируем новые/обновленные файлы");
-            FolderUtil.copyOrCreateNewFiles(folder1, folder2);
-            FolderUtil.copyOrCreateNewFiles(folder2, folder1);
+            if (!folder1.getDeletedFiles().isEmpty() || !folder2.getDeletedFiles().isEmpty()) {
+                statusLabel.setText("синхронизируем удаленные файлы");
+                FolderUtil.delete(folder1, folder2);
+                FolderUtil.delete(folder2, folder1);
+                hasChanges = true;
+            }
 
-            statusLabel.setText("записываем изменения");
-            LogUtil.saveFolderStateToLogFile(folder1);
-            LogUtil.saveFolderStateToLogFile(folder2);
+            if (!folder1.getNewFiles().isEmpty() || !folder2.getNewFiles().isEmpty()) {
+                statusLabel.setText("синхронизируем новые/обновленные файлы");
+                FolderUtil.copyOrCreateNewFiles(folder1, folder2);
+                FolderUtil.copyOrCreateNewFiles(folder2, folder1);
+                hasChanges = true;
+            }
 
-            statusLabel.setText("завершено");
+            if (hasChanges) {
+                statusLabel.setText("записываем изменения");
+                LogUtil.saveFolderStateToLogFile(folder1);
+                LogUtil.saveFolderStateToLogFile(folder2);
+            }
+
+            statusLabel.setText(hasChanges ? "завершено" : "нечего обновлять");
             r.run();
         } catch (Exception e) {
             statusLabel.setText("ошибка, смотри лог файл");
