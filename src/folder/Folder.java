@@ -25,6 +25,7 @@ public class Folder {
     private Set<Path> deletedFiles;
     private Set<Path> newFiles;
 
+
     public static Folder scan(String folderName) throws IOException {
         Set<Path> actualFolderState = getPathsByFolderName(folderName);
 
@@ -39,7 +40,6 @@ public class Folder {
             deletedFiles = Collections.emptySet();
             newFiles = actualFolderState;
         }
-
         return new Folder(folderName, actualFolderState, deletedFiles, newFiles);
     }
 
@@ -49,6 +49,7 @@ public class Folder {
         tmp.removeAll(previousState);
         return tmp;
     }
+
 
     private static Set<Path> getDeletedFiles(Set<Path> actualState, List<Path> previousState) {
         Set<Path> tmp = new HashSet<>(previousState);
@@ -63,5 +64,6 @@ public class Folder {
         tmp.remove(Paths.get(Processor.CHANGES_LOG_FILE_NAME));
         return tmp;
     }
+
 
 }

@@ -34,17 +34,16 @@ public class RecentOpenFolderManager {
         }
     }
 
+
     public void changeFolder(String folderName, String folderPath) {
         properties.put(folderName, folderPath);
     }
 
+
     public String getFolderPath(String folderName) {
         String res = properties.getProperty(folderName);
-        if (res == null) {
-            return System.getProperty("user.dir");
-        } else {
-            return res;
-        }
+        return res == null ? System.getProperty("user.dir") : res;
     }
+
 
 }

@@ -13,6 +13,7 @@ import java.nio.file.attribute.FileTime;
  */
 public class FolderUtil {
 
+
     private static void createParentDirectoryIfNeed(Path path) throws IOException {
         Path tmp = path.getParent();
         if (tmp != null) Files.createDirectories(tmp);
@@ -44,6 +45,7 @@ public class FolderUtil {
             }
         }
     }
+
 
     /**
      * смотрим старое состояние папки 1 (лог файл в котором список файлов которые имелись при прошлом сканировании).

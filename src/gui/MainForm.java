@@ -6,6 +6,7 @@ import properties.RecentOpenFolderManager;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 
 /**
@@ -36,23 +37,25 @@ public class MainForm {
         button1.addActionListener(e -> openFileDialog(fileChooser, RecentOpenFolderManager.FOLDER1, folder1Field));
         button2.addActionListener(e -> openFileDialog(fileChooser, RecentOpenFolderManager.FOLDER2, folder2Field));
 
-        button3.addActionListener(e -> {
-            String folder1Path = folder1Field.getText();
-            String folder2Path = folder2Field.getText();
+        button3.addActionListener(this::startScanButtonClicked);
+    }
 
-            if (folder1Path.equals("") || folder2Path.equals("")) {
-                statusLabel.setText("пути к папкам не должны быть пустыми");
-                return;
-            }
-            if (folder1Path.equals(folder2Path)) {
-                statusLabel.setText("нельзя синхронизировать папку саму с собой");
-                return;
-            }
-            enableButtons(false);
-            new Thread(() -> processor.start(folder1Path, folder2Path, statusLabel, () -> enableButtons(true))).start();
-            propertiesManager.save();
-        });
 
+    void startScanButtonClicked(ActionEvent actionEvent) {
+        String folder1Path = folder1Field.getText();
+        String folder2Path = folder2Field.getText();
+
+        if (folder1Path.equals("") || folder2Path.equals("")) {
+            statusLabel.setText("пути к папкам не должны быть пустыми");
+            return;
+        }
+        if (folder1Path.equals(folder2Path)) {
+            statusLabel.setText("нельзя синхронизировать папку саму с собой");
+            return;
+        }
+        enableButtons(false);
+        new Thread(() -> processor.start(folder1Path, folder2Path, statusLabel, () -> enableButtons(true))).start();
+        propertiesManager.save();
     }
 
 
@@ -61,6 +64,7 @@ public class MainForm {
         button2.setEnabled(enabled);
         button3.setEnabled(enabled);
     }
+
 
     public static void main(String[] args) {
         JFrame mainForm = new JFrame();
