@@ -37,32 +37,30 @@ public class MainForm {
         button2.addActionListener(e -> openFileDialog(fileChooser, RecentOpenFolderManager.FOLDER2, folder2Field));
 
         button3.addActionListener(e -> {
+            String folder1Path = folder1Field.getText();
+            String folder2Path = folder2Field.getText();
 
-            if(folder1Field.getText().equals("")  || folder2Field.getText().equals("")) {
+            if (folder1Path.equals("") || folder2Path.equals("")) {
                 statusLabel.setText("пути к папкам не должны быть пустыми");
                 return;
             }
-
-            if(folder1Field.getText().equals(folder2Field.getText())) {
+            if (folder1Path.equals(folder2Path)) {
                 statusLabel.setText("нельзя синхронизировать папку саму с собой");
                 return;
             }
-
-            button1.setEnabled(false);
-            button2.setEnabled(false);
-            button3.setEnabled(false);
-
-            new Thread(() -> processor.start(folder1Field.getText(), folder2Field.getText(), statusLabel, () -> {
-                button1.setEnabled(true);
-                button2.setEnabled(true);
-                button3.setEnabled(true);
-            })).start();
+            enableButtons(false);
+            new Thread(() -> processor.start(folder1Path, folder2Path, statusLabel, () -> enableButtons(true))).start();
             propertiesManager.save();
-
         });
 
     }
 
+
+    private void enableButtons(boolean enabled) {
+        button1.setEnabled(enabled);
+        button2.setEnabled(enabled);
+        button3.setEnabled(enabled);
+    }
 
     public static void main(String[] args) {
         JFrame mainForm = new JFrame();
