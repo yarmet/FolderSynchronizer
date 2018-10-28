@@ -71,7 +71,7 @@ public class MainForm {
         mainForm.setContentPane(new MainForm().panel1);
         mainForm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainForm.setResizable(false);
-        mainForm.setPreferredSize(new Dimension(600, 200));
+        mainForm.setPreferredSize(new Dimension(800, 200));
         mainForm.pack();
         mainForm.setLocationRelativeTo(null);
         mainForm.setVisible(true);

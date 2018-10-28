@@ -23,16 +23,14 @@ public class Processor {
             boolean hasChanges = false;
 
             if (!folder1.getDeletedFiles().isEmpty() || !folder2.getDeletedFiles().isEmpty()) {
-                statusLabel.setText("синхронизируем удаленные файлы");
-                FolderUtil.delete(folder1, folder2);
-                FolderUtil.delete(folder2, folder1);
+                FolderUtil.delete(folder1, folder2, statusLabel);
+                FolderUtil.delete(folder2, folder1, statusLabel);
                 hasChanges = true;
             }
 
             if (!folder1.getNewFiles().isEmpty() || !folder2.getNewFiles().isEmpty()) {
-                statusLabel.setText("синхронизируем новые/обновленные файлы");
-                FolderUtil.copyOrCreateNewFiles(folder1, folder2);
-                FolderUtil.copyOrCreateNewFiles(folder2, folder1);
+                FolderUtil.copyOrCreateNewFiles(folder1, folder2, statusLabel);
+                FolderUtil.copyOrCreateNewFiles(folder2, folder1, statusLabel );
                 hasChanges = true;
             }
 
@@ -45,7 +43,7 @@ public class Processor {
             statusLabel.setText(hasChanges ? "завершено" : "нечего обновлять");
             unblockButtons.run();
         } catch (Exception e) {
-            statusLabel.setText("ошибка, смотри лог файл");
+            statusLabel.setText("Ошибка, смотри лог файл");
             log.error(e);
         }
     }
